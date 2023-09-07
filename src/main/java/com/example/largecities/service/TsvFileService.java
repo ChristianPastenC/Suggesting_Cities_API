@@ -1,13 +1,17 @@
 package com.example.largecities.service;
 
+import com.example.largecities.models.City;
+import com.univocity.parsers.common.processor.BeanListProcessor;
+import com.univocity.parsers.tsv.TsvParser;
+import com.univocity.parsers.tsv.TsvParserSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Service
 public class TsvFileService {
@@ -15,31 +19,24 @@ public class TsvFileService {
     @Autowired
     private ResourceLoader resourceLoader;
 
-    public String readTsvFile() {
+
+    public List<City> readAndParseTsvFile() {
+        List<City> parsedRows = null;
         try {
-            // Load the TSV file from the resources folder
             Resource resource = resourceLoader.getResource("classpath:cities_canada-usa.tsv");
 
-            // Open an input stream to read the file
-            InputStreamReader inputStreamReader = new InputStreamReader(resource.getInputStream());
+            InputStreamReader inputReader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8);
+            BeanListProcessor<City> rowProcessor = new BeanListProcessor<City>(City.class);
+            TsvParserSettings settings = new TsvParserSettings();
+            settings.setHeaderExtractionEnabled(true);
+            settings.setProcessor(rowProcessor);
+            TsvParser parser = new TsvParser(settings);
+            parser.parse(inputReader);
+            return rowProcessor.getBeans();
 
-            // Read the file using a BufferedReader
-            BufferedReader reader = new BufferedReader(inputStreamReader);
-            StringBuilder content = new StringBuilder();
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                content.append(line).append("\n");
-            }
-
-            // Close the readers
-            reader.close();
-            inputStreamReader.close();
-
-            return content.toString();
         } catch (IOException e) {
-            e.printStackTrace();
-            return "Error reading TSV file: " + e.getMessage();
+            System.err.println(e.getMessage());
         }
+        return parsedRows;
     }
 }
