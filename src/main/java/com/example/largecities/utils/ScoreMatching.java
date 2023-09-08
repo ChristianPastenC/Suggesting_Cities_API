@@ -1,6 +1,17 @@
 package com.example.largecities.utils;
 
-public class StrScoreMatching {
+import com.example.largecities.models.City;
+
+public class ScoreMatching {
+    public static float calculateScore(City cityA, City cityB) {
+        float scoreName = calculateStrMatch(cityA.getName(), cityB.getName());
+        float scoreLat = calculateStrMatch(Double.toString(cityA.getLatitude()), Double.toString(cityB.getLatitude()));
+        float scoreLng = calculateStrMatch(Double.toString(cityA.getLongitude()), Double.toString(cityB.getLongitude()));
+
+        if(scoreName > 0.9) return scoreName;
+        return (float) (((scoreName * 2.8) + (scoreLat * 0.1) + (scoreLng * 0.1)) / 3);
+    }
+
     public static float calculateStrMatch(String s1, String s2) {
         int maxLength = Math.max(s1.length(), s2.length());
         int editDistance = levenshteinDistance(s1, s2);

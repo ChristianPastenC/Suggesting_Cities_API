@@ -17,6 +17,13 @@ public class City {
     @Column(name = "score")
     private double score;
 
+    public City(){}
+    public City(String name, Double latitude, Double longitude) {
+        this.name = (name != null) ? name : "";
+        this.latitude = (latitude != null) ? latitude : 0.0;
+        this.longitude = (longitude != null) ? longitude : 0.0;
+    }
+
     // Getters and setters
     public String getName() { return  this.name; }
     public void setName(String name) { this.name = name; }

@@ -1,10 +1,12 @@
 package com.example.largecities.controller;
 
 import com.example.largecities.models.City;
+import com.example.largecities.responsehandler.ResponseHandler;
 import com.example.largecities.service.TsvFileService;
 import com.example.largecities.utils.CityComparator;
-import com.example.largecities.utils.StrScoreMatching;
+import com.example.largecities.utils.ScoreMatching;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,23 +27,30 @@ public class CityController {
         return ResponseEntity.ok(cities);
     }
 
-    @GetMapping("/suggestion")
-    public ResponseEntity<List<City>> suggestedCities(
-            @RequestParam(required = true) String q
+    @GetMapping("/suggestions")
+    public ResponseEntity<Object> suggestedCities(
+            @RequestParam(required = true) String q,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude
     ) {
+        City paramCity = new City(q, latitude, longitude);
+
         List<City> cities = tsvFileService.readAndParseTsvFile();
         List<City> filteredCities = new ArrayList<>();
 
         for (City city : cities) {
-            double currentScore = StrScoreMatching.calculateStrMatch(city.getName(), q);
-            if (currentScore > 0.5) {
+            float currentScore = ScoreMatching.calculateScore(city, paramCity);
+            if (currentScore > 0.3) {
                 city.setScore(currentScore);
                 filteredCities.add(city);
             }
         }
         filteredCities.sort(new CityComparator());
 
-        return ResponseEntity.ok(filteredCities);
+        if(!filteredCities.isEmpty())
+            return ResponseHandler.generateResponse("Success", filteredCities, HttpStatus.OK);
+
+        return ResponseHandler.generateResponse("Not found suggestions", filteredCities, HttpStatus.OK);
     }
 
 }
