@@ -40,7 +40,7 @@ public class CityController {
 
         for (City city : cities) {
             float currentScore = ScoreMatching.calculateScore(city, paramCity);
-            if (currentScore > 0.3) {
+            if (currentScore > 0.5) {
                 city.setScore(currentScore);
                 filteredCities.add(city);
             }

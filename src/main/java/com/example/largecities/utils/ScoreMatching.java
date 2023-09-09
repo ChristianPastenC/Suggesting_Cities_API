@@ -4,7 +4,9 @@ import com.example.largecities.models.City;
 
 public class ScoreMatching {
     public static float calculateScore(City cityA, City cityB) {
-        float scoreName = calculateStrMatch(cityA.getName(), cityB.getName());
+        String[] auxName = cityA.getName().split(",");
+
+        float scoreName = calculateStrMatch(auxName[0], cityB.getName());
         float scoreLat = calculateStrMatch(Double.toString(cityA.getLatitude()), Double.toString(cityB.getLatitude()));
         float scoreLng = calculateStrMatch(Double.toString(cityA.getLongitude()), Double.toString(cityB.getLongitude()));
 
