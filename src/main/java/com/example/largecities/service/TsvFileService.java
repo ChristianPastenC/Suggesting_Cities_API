@@ -23,7 +23,7 @@ public class TsvFileService {
     public List<City> readAndParseTsvFile() {
         List<City> parsedRows = null;
         try {
-            Resource resource = resourceLoader.getResource("classpath:cities_canada-usa.tsv");
+            Resource resource = resourceLoader.getResource("classpath:world.cities.new.tsv");
 
             InputStreamReader inputReader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8);
             BeanListProcessor<City> rowProcessor = new BeanListProcessor<City>(City.class);

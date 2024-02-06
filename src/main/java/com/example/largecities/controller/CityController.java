@@ -29,26 +29,27 @@ public class CityController {
 
     @GetMapping("/suggestions")
     public ResponseEntity<Object> suggestedCities(
-            @RequestParam(required = true) String q,
+            @RequestParam(required = true) String city_name,
             @RequestParam(required = false) Double latitude,
             @RequestParam(required = false) Double longitude
     ) {
-        City paramCity = new City(q, latitude, longitude);
+        City paramCity = new City(city_name, latitude, longitude);
 
         List<City> cities = tsvFileService.readAndParseTsvFile();
         List<City> filteredCities = new ArrayList<>();
 
         for (City city : cities) {
             float currentScore = ScoreMatching.calculateScore(city, paramCity);
-            if (currentScore > 0.5) {
+            if (currentScore > 0.65) {
                 city.setScore(currentScore);
                 filteredCities.add(city);
             }
         }
         filteredCities.sort(new CityComparator());
 
-        if(!filteredCities.isEmpty())
+        if (!filteredCities.isEmpty()) {
             return ResponseHandler.generateResponse("Success", filteredCities, HttpStatus.OK);
+        }
 
         return ResponseHandler.generateResponse("Not found suggestions", filteredCities, HttpStatus.OK);
     }
