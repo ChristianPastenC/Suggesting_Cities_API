@@ -30,17 +30,17 @@ public class CityController {
     @GetMapping("/suggestions")
     public ResponseEntity<Object> suggestedCities(
             @RequestParam(required = true) String city_name,
-            @RequestParam(required = false) Double latitude,
-            @RequestParam(required = false) Double longitude
+            @RequestParam(required = false) Double lat,
+            @RequestParam(required = false) Double lon
     ) {
-        City paramCity = new City(city_name, latitude, longitude);
+        City paramCity = new City(city_name, lat, lon);
 
         List<City> cities = tsvFileService.readAndParseTsvFile();
         List<City> filteredCities = new ArrayList<>();
 
         for (City city : cities) {
             float currentScore = ScoreMatching.calculateScore(city, paramCity);
-            if (currentScore > 0.65) {
+            if (currentScore > 0.51) {
                 city.setScore(currentScore);
                 filteredCities.add(city);
             }

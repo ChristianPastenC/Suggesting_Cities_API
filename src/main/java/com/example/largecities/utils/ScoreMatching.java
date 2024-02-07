@@ -8,13 +8,20 @@ public class ScoreMatching {
         String[] auxName = cityA.getName().split(",");
 
         float scoreName = calculateStrMatch(auxName[0], cityB.getName());
-        float scoreLat = calculateStrMatch(Double.toString(cityA.getLatitude()), Double.toString(cityB.getLatitude()));
-        float scoreLng = calculateStrMatch(Double.toString(cityA.getLongitude()), Double.toString(cityB.getLongitude()));
+        float scoreLat = calculateStrMatch(Double.toString(cityA.getLatitude()),
+                Double.toString(cityB.getLatitude()));
+        float scoreLng = calculateStrMatch(Double.toString(cityA.getLongitude()),
+                Double.toString(cityB.getLongitude()));
 
         if (scoreName > 0.9) {
             return scoreName;
+        } else if (scoreLat > 0.9) {
+            return (float) (((scoreName * 0.5) + (scoreLat * 2) + (scoreLng * 0.5)) / 3);
+        } else if (scoreLng > 0.9) {
+            return (float) (((scoreName * 0.5) + (scoreLat * 0.5) + (scoreLng * 2)) / 3);
         }
-        return (float) (((scoreName * 2.8) + (scoreLat * 0.1) + (scoreLng * 0.1)) / 3);
+
+        return (float) (((scoreName * 2) + (scoreLat * 0.5) + (scoreLng * 0.5)) / 3);
     }
 
     public static float calculateStrMatch(String s1, String s2) {

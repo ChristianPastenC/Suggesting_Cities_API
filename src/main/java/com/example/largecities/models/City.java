@@ -20,7 +20,7 @@ public class City {
     private double longitude;
 
     @Parsed(field = "pop")
-    private double population;
+    private int population;
     
     @Parsed(field = "country")
     private String code_country;
@@ -69,11 +69,11 @@ public class City {
         this.score = score;
     }
 
-    public double getPopulation() {
+    public int getPopulation() {
         return this.population;
     }
     
-    public void setPopulation(double population) {
+    public void setPopulation(int population) {
         this.population = population;
     }
     
