@@ -11,8 +11,9 @@ import java.util.Map;
 public class ResponseHandler {
     public static ResponseEntity<Object> generateResponse(String message, List<City> data, HttpStatus status) {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("suggestions", data);
+        map.put("data", data);
         map.put("message", message);
+        map.put("data_size", data.size() > 0 ? data.size() - 1 : 0);
 
         return new ResponseEntity<Object>(map, status);
     }
