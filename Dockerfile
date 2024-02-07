@@ -1,4 +1,4 @@
-FROM adoptopenjdk:17-jdk-hotspot-bionic
+FROM openjdk:17-oracle
 WORKDIR /app
 COPY pom.xml .
 RUN apt-get update && apt-get install -y maven && mvn dependency:go-offline
